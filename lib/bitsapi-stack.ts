@@ -5,18 +5,21 @@ import * as appsync from '@aws-cdk/aws-appsync';
 import * as cognito from '@aws-cdk/aws-cognito';
 import * as dynamoDb from '@aws-cdk/aws-dynamodb';
 import { IUserPool } from '@aws-cdk/aws-cognito';
+import { getSubscriptionRequestMapper, getSubscriptionResponseMapper, saveSubcriptionRequestMapper, saveSubcriptionResponseMapper } from './api/resolversMappers';
 
 export class BitsapiStack extends cdk.Stack {
   private readonly userPool: cognito.IUserPool;
   private readonly api: appsync.GraphqlApi;
   private readonly bitsUserSubscriptionsDynamoDbTable: dynamoDb.Table;
+  private readonly bistUserSubscriptionDataSource: appsync.DynamoDbDataSource;
 
   constructor(scope: cdk.Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
     this.userPool = this.createUserPool();
     this.api = this.createApi();
     this.bitsUserSubscriptionsDynamoDbTable = this.createDynamoTable();
-
+    this.bistUserSubscriptionDataSource = this.createDataSource();
+    this.createResolvers();
   }
 
   createUserPool() {
@@ -58,13 +61,36 @@ export class BitsapiStack extends cdk.Stack {
       tableName: 'bits-users-subscriptions'
     });
 
-    new appsync.DynamoDbDataSource(this, 'bits-user-subscriptions', {
-      api: this.api,
-      table: bitsUserSubscriptionsDynamoDbTable,
-      name: 'BitsUserSubscriptionsSource'
-    });
+
     return bitsUserSubscriptionsDynamoDbTable;
   }
 
+  createDataSource() {
+    return new appsync.DynamoDbDataSource(this, 'bits-user-subscriptions', {
+      api: this.api,
+      table: this.bitsUserSubscriptionsDynamoDbTable,
+      name: 'BitsUserSubscriptionsSource'
+    });
+  }
+
+  createResolvers() {
+    new appsync.Resolver(this, "GetSubscriptionsResolver", {
+      api: this.api,
+      fieldName: 'getSubscriptions',
+      typeName: 'Query',
+      dataSource: this.bistUserSubscriptionDataSource,
+      requestMappingTemplate: appsync.MappingTemplate.fromString(getSubscriptionRequestMapper),
+      responseMappingTemplate: appsync.MappingTemplate.fromString(getSubscriptionResponseMapper)
+    });
+
+    new appsync.Resolver(this, "SaveSubscriptionsResolver", {
+      api: this.api,
+      fieldName: 'saveSubscription',
+      typeName: 'Mutation',
+      dataSource: this.bistUserSubscriptionDataSource,
+      requestMappingTemplate: appsync.MappingTemplate.fromString(saveSubcriptionRequestMapper),
+      responseMappingTemplate: appsync.MappingTemplate.fromString(saveSubcriptionResponseMapper)
+    });
+  }
 
 }
