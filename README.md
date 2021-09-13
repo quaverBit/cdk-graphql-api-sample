@@ -4,7 +4,7 @@ Simple Api to save recurring payments, using AWS Appsync, DynamoDb and Cognito.
 The Lack of a proper nodejs function is justified as complexity doesn't grow larger then VTL templates.
 
 ## Architecture Overview
-![alt text](https://github.com/[quaverbit]/[bitsapi]/blob/[documentation]/architecture-overview.png?raw=true)
+![alt text](https://github.com/quaverBit/bitsapi/blob/documentation/architecture-overview.png?raw=true)
 ## Useful commands
 
  * `npm run build`   compile typescript to js
