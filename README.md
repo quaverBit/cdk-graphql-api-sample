@@ -4,7 +4,7 @@ Simple Api to save recurring payments, using AWS Appsync, DynamoDb and Cognito.
 The Lack of a proper nodejs function is justified as complexity doesn't grow larger then VTL templates.
 
 ## Architecture Overview
-![alt text](https://github.com/quaverBit/bitsapi/blob/documentation/architecture-overview.png?raw=true)
+![alt text](https://github.com/quaverBit/bitsapi/blob/master/architecture-overview.png?raw=true)
 ## Useful commands
 
  * `npm run build`   compile typescript to js
@@ -13,3 +13,7 @@ The Lack of a proper nodejs function is justified as complexity doesn't grow lar
  * `cdk deploy`      deploy this stack to your default AWS account/region
  * `cdk diff`        compare deployed stack with current state
  * `cdk synth`       emits the synthesized CloudFormation template
+
+## Final notes:
+
+High level plan on plan/README.md
