@@ -1,3 +1,17 @@
+type Subscription @aws_cognito_user_pools {
+  name: String,
+  value: Float
+}
+
+input SaveSubscription @aws_cognito_user_pools {
+  name: String,
+  value: Float
+}
+
 type Query @aws_cognito_user_pools {
-  getSubscriptions: [String]
+  getSubscriptions: [Subscription]
+}
+
+type Mutation @aws_cognito_user_pools {
+  saveSubscription(Subscription: SaveSubscription): Subscription
 }
