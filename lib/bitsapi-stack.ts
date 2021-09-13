@@ -4,7 +4,6 @@ import * as cdk from '@aws-cdk/core';
 import * as appsync from '@aws-cdk/aws-appsync';
 import * as cognito from '@aws-cdk/aws-cognito';
 import * as dynamoDb from '@aws-cdk/aws-dynamodb';
-import { IUserPool } from '@aws-cdk/aws-cognito';
 import { getSubscriptionRequestMapper, getSubscriptionResponseMapper, saveSubcriptionRequestMapper, saveSubcriptionResponseMapper } from './api/resolversMappers';
 
 export class BitsapiStack extends cdk.Stack {
@@ -22,7 +21,7 @@ export class BitsapiStack extends cdk.Stack {
     this.createResolvers();
   }
 
-  createUserPool() {
+  createUserPool(): cognito.UserPool {
     const userPool = new cognito.UserPool(this, 'BitsUserPool', {
       userPoolName: "bits-users",
       signInAliases: {
@@ -38,7 +37,7 @@ export class BitsapiStack extends cdk.Stack {
     return userPool;
   }
 
-  createApi() {
+  createApi(): appsync.GraphqlApi {
     return new appsync.GraphqlApi(this, "BitsGraphqlApi", {
       name: "bits-api",
       schema: new appsync.Schema({
@@ -53,19 +52,16 @@ export class BitsapiStack extends cdk.Stack {
     })
   }
 
-  createDynamoTable() {
-    const bitsUserSubscriptionsDynamoDbTable = new dynamoDb.Table(this, 'BitsDynamoDbTable', {
+  createDynamoTable(): dynamoDb.Table {
+   return new dynamoDb.Table(this, 'BitsDynamoDbTable', {
       billingMode: dynamoDb.BillingMode.PAY_PER_REQUEST,
       partitionKey: { name: 'PK', type: dynamoDb.AttributeType.STRING },
       sortKey: { name: 'USERID', type: dynamoDb.AttributeType.STRING },
       tableName: 'bits-users-subscriptions'
     });
-
-
-    return bitsUserSubscriptionsDynamoDbTable;
   }
 
-  createDataSource() {
+  createDataSource(): appsync.DynamoDbDataSource {
     return new appsync.DynamoDbDataSource(this, 'bits-user-subscriptions', {
       api: this.api,
       table: this.bitsUserSubscriptionsDynamoDbTable,
@@ -73,7 +69,7 @@ export class BitsapiStack extends cdk.Stack {
     });
   }
 
-  createResolvers() {
+  createResolvers(): void {
     new appsync.Resolver(this, "GetSubscriptionsResolver", {
       api: this.api,
       fieldName: 'getSubscriptions',
