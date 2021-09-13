@@ -1,9 +1,10 @@
-# Welcome to your CDK TypeScript project!
+# Welcome to your Bits Api
+Simple Api to save recurring payments, using AWS Appsync, DynamoDb and Cognito.
 
-This is a blank project for TypeScript development with CDK.
+The Lack of a proper nodejs function is justified as complexity doesn't grow larger then VTL templates.
 
-The `cdk.json` file tells the CDK Toolkit how to execute your app.
-
+## Architecture Overview
+![alt text](https://github.com/quaverBit/bitsapi/blob/master/architecture-overview.png?raw=true)
 ## Useful commands
 
  * `npm run build`   compile typescript to js
@@ -12,3 +13,7 @@ The `cdk.json` file tells the CDK Toolkit how to execute your app.
  * `cdk deploy`      deploy this stack to your default AWS account/region
  * `cdk diff`        compare deployed stack with current state
  * `cdk synth`       emits the synthesized CloudFormation template
+
+## Final notes:
+
+High level plan on plan/README.md
